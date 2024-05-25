@@ -110,7 +110,8 @@ def auto_recruit(player_data, token):
             player_data["status"]['recruitLicense'] -= 1
 
 
-def auto_building(player_data, token):"""
+def auto_building(player_data, token):
+    """
     if datetime.date.today().isoweekday() % 2:
         post('/building/assignChar', {"roomSlotId": "slot_34", "charInstIdList": [244, 224, 257, 134, 132]}, token)
         post('/building/assignChar', {"roomSlotId": "slot_26", "charInstIdList": [27]}, token)
@@ -144,8 +145,8 @@ def auto_building(player_data, token):"""
         post('/building/assignChar', {"roomSlotId": "slot_6", "charInstIdList": [2, 12, 19]}, token)
         post('/building/assignChar', {"roomSlotId": "slot_5", "charInstIdList": [42, 206, 178]}, token)
         post('/building/assignChar', {"roomSlotId": "slot_9", "charInstIdList": [5, 205, 15, 33, 204]}, token)
-        post('/building/assignChar', {"roomSlotId": "slot_3", "charInstIdList": [24, 201, 141, 11, 46]}, token)"""
-
+        post('/building/assignChar', {"roomSlotId": "slot_3", "charInstIdList": [24, 201, 141, 11, 46]}, token)
+    """
     post("/building/gainAllIntimacy", {}, token)
     post('/building/settleManufacture',
          {"roomSlotIdList": list(player_data["building"]["rooms"]["MANUFACTURE"].keys()), "supplement": 1}, token)
