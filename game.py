@@ -23,14 +23,14 @@ def auto_checkin(player_data, token):
         log("Found LoginOnly Activity")
         for k in act:
             res = post('/activity/loginOnly/getReward', {"activityId": k}, token)
-            print_items(res["reward"])
+            #print_items(res["reward"])
     if act := player_data["activity"]["CHECKIN_ONLY"]:
         log("Found CheckinOnly Activity")
         for k, v in act.items():
             for index, value in enumerate(v["history"]):
                 if value:
                     res = post('/activity/getActivityCheckInReward', {"activityId": k, "index": index}, token)
-                    print_items(res["items"])
+                    #print_items(res["items"])
     # bless only
     if act := player_data["activity"]["BLESS_ONLY"]:
         log("Found BlessOnly Activity")
@@ -68,7 +68,7 @@ def auto_checkin(player_data, token):
         for k in act:
             if not act[k]["currentStatus"]: continue
             res = post('/activity/actCheckinAccess/getCheckInReward', {"activityId": k}, token)
-            print_items(res["items"])
+            #print_items(res["items"])
 
 
 def auto_mail(token):
@@ -80,7 +80,7 @@ def auto_mail(token):
             sys.append(i['mailId'])
         else:
             norm.append(i['mailId'])
-    if not (norm and sys):
+    if (norm and sys):
         res = post('/mail/receiveAllMail', {"mailIdList": norm, "sysMailIdList": sys}, token)
         log("Received all mails")
         print_items(res["items"])
@@ -212,7 +212,22 @@ def auto_social_buy(player_data, token):
         if player_data["status"]["socialPoint"] >= good["price"]:
             post("/shop/buySocialGood", {"goodId": good['goodId'], "count": 1}, token)
             player_data["status"]["socialPoint"] -= good["price"]
+def auto_activity(player_data, token):
+    for k,v in player_data["activity"]["TYPE_ACT27SIDE"].items():
+        if v["signedIn"]:
+            continue
+        post("/activity/act27side/nextDay", {"activityId":k}, token)
+        post("/activity/act27side/saleStart", {"activityId":k}, token)
+        post("/activity/act27side/purchase", {"activityId":k,"strategyIds":[2,2,2]}, token)
+        post("/activity/act27side/sell", {"activityId":k,"price":45}, token)
+        post("/activity/act27side/sell", {"activityId":k,"price":35}, token)
+        post("/activity/act27side/sell", {"activityId":k,"price":950}, token)
+        post("/activity/act27side/saleSettle", {"activityId":k}, token)
 
+def auto_battle(player_data, token):
+    post("/quest/battleStart",{"isRetro":0,"pry":0,"battleType":0,"continuous":None,"usePracticeTicket":0,"stageId":"main_01-07","squad":{"squadId":"0","name":None,"slots":[{"charInstId":78,"skillIndex":0,"currentEquip":"uniequip_002_myrtle"},{"charInstId":131,"skillIndex":1,"currentEquip":"uniequip_002_bpipe"},{"charInstId":72,"skillIndex":0,"currentEquip":"uniequip_001_elysm"},{"charInstId":176,"skillIndex":2,"currentEquip":"uniequip_002_mostma"},{"charInstId":79,"skillIndex":1,"currentEquip":"uniequip_002_amgoat"},{"charInstId":24,"skillIndex":2,"currentEquip":"uniequip_002_angel"},{"charInstId":141,"skillIndex":1,"currentEquip":"uniequip_002_plosis"},None,None,None,None,None]},"assistFriend":None,"isReplay":1,"startTs":time()},token)
+    sleep(73)
+    post("/quest/battleFinish",{},token)
 
 def auto_ra(player_data, token):
     post("/sandboxPerm/sandboxV2/build",
